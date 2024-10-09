@@ -5,8 +5,8 @@ from aiogram import Bot, Dispatcher, Router
 from modules.bot_info_class import BOT_INFO
 from modules.ai_class import AI
 
-
-
+# объект для блокировки потоков
+lock = asyncio.Lock()
 
 # сколько максимум символов может быть в сообщении в ТГ (если в ответе больше - ответ будет разбит на сообщения)
 tg_msg_max_len = 4096 

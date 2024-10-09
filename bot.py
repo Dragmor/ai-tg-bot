@@ -10,6 +10,7 @@ from modules import logger
 from modules import funcs
 from modules import routers_cmd
 from modules import vision
+from modules import decorators
 # это импорт из __init__
 from modules import bot, dp, router, tg_msg_max_len, bot_info, ai
 
@@ -38,14 +39,16 @@ async def help(message: types.Message):
 • /pref - _показать префикс (роль)_
 • `/delpref` - _удалить префикс_
 • `/setpref` -  _задать префикс. Пример:_ `/setpref самурай Ямамото`
-• `/maxtokens` - _задать макс. количество токенов, доступное для генерации ответа. От 32 до 32000. Пример:_ `/maxtokens 1024`
+• `/maxtokens` - _задать макс. количество токенов, доступное для генерации ответа. От 32 до 32000. Пример:_ `/maxtokens 1024`. Если вызвать команду без числа, то кол-во токенов будет None, т.е. длина выходного сообщения не будет искусственно ограничена
     """
     await message.answer(help_text, parse_mode='Markdown')
 
 
 
-# главный обработчик сообщений
+# главный обработчик сообщений (текстовых сообщений для ИИ, не команд)
 @router.message()
+@decorators.lock_thread # декоратор для блокировки потока, чтобы не было ошибок в 
+# последовательности обработки сообщений и обращения к файлам
 async def handle_group_messages(message: types.Message):
     # финальный текст сообщения
     final_text = ""
@@ -53,7 +56,6 @@ async def handle_group_messages(message: types.Message):
     msg_info = f"@{message.from_user.username} : {datetime.now().strftime('%Y.%m.%d-%H:%M')}"
     # получаем текст сообщения, либо текст под картинкой (если что-то из этого есть вообще)
     msg_text = message.text or message.caption
-
     # если в сообщение есть изображение, выполняем обработку (переводим в текст)
     # в ТГ группа картинок (альбом) приходят в бота как отдельные сообщения
     if message.photo:
@@ -106,7 +108,7 @@ async def on_startup():
     bot_information = await bot.get_me()
     bot_info.set_id(id=bot_information.id)
     bot_info.set_username(username=bot_information.username)
-    logger.info(f"Bot started, ID: {bot_info.get_id()}, name: {bot_info.get_username()}")
+    logger.info(f"Bot started, ID: {bot_info.get_id()}, name: @{bot_info.get_username()}")
 
 
 

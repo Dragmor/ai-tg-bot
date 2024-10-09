@@ -6,7 +6,7 @@
     "боп",
     "@gudka_bop_bot"
   ],
-  "max_tokens": 2048,
+  "max_tokens": null,
   "prefix": "Гудка Боп",
   "system_prompt": [
     {
