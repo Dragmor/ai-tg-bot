@@ -6,6 +6,7 @@ from aiogram import types, Router
 # 
 from modules import bot, dp, router
 from modules import decorators
+# __init__
 from modules import ai
 
 

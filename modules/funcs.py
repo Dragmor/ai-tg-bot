@@ -65,10 +65,12 @@ async def send_split_messages(bot, message, messages):
 def format_response(response):
     result = []
     for s in response.split('\n'):
+        result.append(s)
         if "#" in s:
-            result.append(f"`{s.replace('#', '')}`")
+            result[-1] = f"`{result[-1].replace('#', '')}`"
         if s.startswith("-"):
-            result.append(f"_{s}_")
+            result[-1] = f"_{result[-1]}_"
+
     return "\n".join(result).replace("**", "*") if result else response.replace("**", "*")
 
 # Функция определения, будет ли бот отвечать

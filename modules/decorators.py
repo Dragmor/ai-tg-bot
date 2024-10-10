@@ -3,28 +3,26 @@ from aiogram import types
 # 
 from modules import lock
 
-# декоратор для проверки доступа (сообщения)
+
+# для проверки доступа к боту
 def check_access(func):
     @wraps(func)
-    async def wrapper(message: types.Message, *args, **kwargs):
-        user_id = message.from_user.id
-        if user_id not in users_manager.users_data:
-            await message.answer(MESSAGES['access']['access_deny'])
-            return
-        await func(message, *args, **kwargs)
+    async def wrapper(trigger, *args, **kwargs):
+        chat_id = trigger.chat.id # id чата, группы
+        user_id = trigger.from_user.id # id юзера
+
+        if type(trigger) == types.Message:
+            print("ЭТО СООБЩЕНИЕ")
+
+        elif type(trigger) == types.CallbackQuery:
+            print("ЭТО КОЛБЕК")
+            await trigger.answer()
+        else:
+            return None
+
+        await func(trigger, *args, **kwargs)
     return wrapper
 
-# декоратор для проверки доступа (клавиатура)
-def check_access_callback(func):
-    @wraps(func)
-    async def wrapper(call: types.CallbackQuery, *args, **kwargs):
-        user_id = call.from_user.id
-        if user_id not in users_manager.users_data:
-            await call.answer()
-            await call.message.answer(MESSAGES['access']['access_deny'])
-            return
-        await func(call, *args, **kwargs)
-    return wrapper
 
 def lock_thread(func):
     @wraps(func)

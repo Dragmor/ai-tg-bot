@@ -49,6 +49,7 @@ async def help(message: types.Message):
 @router.message()
 @decorators.lock_thread # декоратор для блокировки потока, чтобы не было ошибок в 
 # последовательности обработки сообщений и обращения к файлам
+@decorators.check_access
 async def handle_group_messages(message: types.Message):
     # финальный текст сообщения
     final_text = ""

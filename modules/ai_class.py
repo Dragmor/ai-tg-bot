@@ -56,11 +56,6 @@ class AI():
         with open(self.history_file, 'w', encoding='utf-8') as f:
             json.dump(self.messages, f, ensure_ascii=False, indent=2)
 
-    def trim_history(self):
-        while self.count_tokens() > 32000:
-            # отрезаем последнее сообщение
-            self.messages.pop(0)
-
     # подсчитывает токены, и обрезает
     def count_tokens(self):
         total = []
